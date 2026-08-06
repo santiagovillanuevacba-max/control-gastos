@@ -1,0 +1,38 @@
+# Cuentas del usuario. Config-driven: para replicar el proyecto para otra persona,
+# se cambian estas cuentas y las reglas de config/rules.csv — el código no se toca.
+
+titular: "Nombre Apellido"           # usado para detectar transferencias entre cuentas propias
+
+cuentas:
+  - id: visa_credito
+    nombre: "Visa Crédito"
+    banco: "BBVA / Banco Francés"
+    formato: pdf
+    parser: bbva_tarjeta
+  - id: master_credito
+    nombre: "Mastercard Crédito"
+    banco: "BBVA / Banco Francés"
+    formato: pdf
+    parser: bbva_tarjeta
+  - id: visa_debito
+    nombre: "Visa Débito (Caja de Ahorro)"
+    banco: "BBVA / Banco Francés"
+    formato: pdf
+    parser: bbva_caja
+  - id: dolar_app
+    nombre: "Dólar App"
+    banco: "DolarApp / ARQ"
+    formato: pdf
+    parser: dolarapp
+  - id: mercado_pago
+    nombre: "Mercado Pago"
+    banco: "Mercado Pago"
+    formato: csv
+    parser: mercadopago
+
+# Regla de transferencias internas: mismo importe + misma fecha + nombre del titular,
+# entre estas cuentas, se compensan (no son gasto ni ingreso).
+cuentas_internas: [mercado_pago, dolar_app, visa_debito]
+
+# Tipo de cambio para expresar consumos en USD (se puede sobrescribir por resumen).
+usd_ars_default: 1450

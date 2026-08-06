@@ -1,0 +1,21 @@
+# Compromisos futuros ya asumidos (cuotas de tarjeta, préstamos) + gastos recurrentes.
+# Se editan a mano cuando cambian. Alimentan la vista "Futuro" de la app.
+# (valores de EJEMPLO para el demo público)
+
+recurrente_mensual:            # fijos y suscripciones que se repiten todos los meses
+  Monotributo: 72414
+  Teléfono: 46464
+  Club Talleres: 60000
+  Gimnasio: 33000
+  Servicios hogar: 9327
+  Suscripciones: 120000
+
+cuotas_tarjeta:                # cuotas de tarjeta a vencer, por mes
+  2025-03: 87696
+  2025-04: 87696
+  2025-05: 56667
+
+prestamo:                      # cuotas de préstamo, por mes
+  2025-03: 262613
+  2025-04: 259647
+  2025-05: 256523

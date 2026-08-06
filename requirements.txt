@@ -1,0 +1,4 @@
+PyYAML>=6.0
+# El parseo de PDFs usa `pdftotext` de poppler-utils (herramienta de sistema):
+#   Ubuntu/Debian:  sudo apt-get install poppler-utils
+#   macOS:          brew install poppler

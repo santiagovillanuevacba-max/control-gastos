@@ -1,0 +1,46 @@
+source,account,date,desc,amount_ars,amount_usd,cuota,kind
+sample,Visa Credito,2025-01-06,863764*VISA EN VIVO C.05/12,56666.66,,5/12,consumo
+sample,Visa Credito,2025-01-08,DLO*PRIMEVIDEO,7863.79,,,consumo
+sample,Visa Credito,2025-01-11,MICROSOFT USD,,14.70,,consumo
+sample,Visa Credito,2025-01-13,GOOGLE *YouTube USD,,1.44,,consumo
+sample,Visa Credito,2025-01-16,PAGO TIC QIVOX,33000.00,,,consumo
+sample,Visa Credito,2025-01-20,CLUB TALLERES,57080.00,,,consumo
+sample,Visa Credito,2025-01-22,HUGOS-HUGOS,14200.00,,,consumo
+sample,Master Credito,2025-01-30,DLO*HELP_HBOMAX,10152.00,,,consumo
+sample,Mercado Pago,2025-01-05,Pago de servicio Ecogas Centro,-9523.02,,,mp
+sample,Mercado Pago,2025-01-14,Pago de suscripción Meli+,-18399.00,,,mp
+sample,Mercado Pago,2025-01-15,Pago de servicio ARCA,-63357.80,,,mp
+sample,Mercado Pago,2025-01-16,Transferencia enviada Fit Factory Urca,-16250.00,,,mp
+sample,Mercado Pago,2025-01-16,Pago Carrefour,-16878.00,,,mp
+sample,Mercado Pago,2025-01-16,Pago La Celeste,-2256.06,,,mp
+sample,Mercado Pago,2025-01-18,Pago MERCATO S A S,-8400.00,,,mp
+sample,Mercado Pago,2025-01-20,Pago Shell,-25000.00,,,mp
+sample,Mercado Pago,2025-01-22,Pago EBANX S.A.,-4083.00,,,mp
+sample,Mercado Pago,2025-01-25,Pago PEDIDOSYA,-9200.00,,,mp
+sample,Mercado Pago,2025-01-10,Transferencia enviada Juan Perez,-12000.00,,,mp
+sample,Mercado Pago,2025-01-12,Transferencia enviada Juan Perez,-8000.00,,,mp
+sample,Mercado Pago,2025-01-19,Transferencia enviada Maria Gomez,-15000.00,,,mp
+sample,Mercado Pago,2025-01-08,Transferencia recibida Cliente Ejemplo SA,120000.00,,,mp
+sample,Mercado Pago,2025-01-03,Rendimientos,560.87,,,mp
+sample,Mercado Pago,2025-01-05,Reserva por gastos Vacaciones,-3000.00,,,mp
+sample,Mercado Pago,2025-01-20,Compra de dolares,-50000.00,,,mp
+sample,Dolar App,2025-01-20,Pago con tarjeta Netflix,-8500.00,,,dolar
+sample,Dolar App,2025-01-07,Pago con tarjeta Spotify,-4288.70,,,dolar
+sample,Dolar App,2025-01-15,Envío a DolarApp,-50000.00,,,dolar
+sample,Caja de Ahorro,2025-01-12,DEBITO CUOTA PRESTAMO,-265000.00,,,caja
+sample,Caja de Ahorro,2025-01-06,PAGO DE TARJETA VISA,-180000.00,,,caja
+sample,Visa Credito,2025-02-06,863764*VISA EN VIVO C.06/12,56666.66,,6/12,consumo
+sample,Visa Credito,2025-02-08,DLO*PRIMEVIDEO,7863.79,,,consumo
+sample,Visa Credito,2025-02-17,PAGO TIC QIVOX,33000.00,,,consumo
+sample,Visa Credito,2025-02-19,CLUB TALLERES,58800.00,,,consumo
+sample,Visa Credito,2025-02-10,CLAUDE.AI SUBSCR USD,,20.00,,consumo
+sample,Mercado Pago,2025-02-05,Pago de servicio Ecogas Centro,-9265.00,,,mp
+sample,Mercado Pago,2025-02-14,Pago de suscripción Meli+,-18399.00,,,mp
+sample,Mercado Pago,2025-02-15,Pago de servicio ARCA,-72414.00,,,mp
+sample,Mercado Pago,2025-02-18,Pago Polleria Ambrosio,-11000.00,,,mp
+sample,Mercado Pago,2025-02-21,Transferencia enviada Juan Perez,-10000.00,,,mp
+sample,Mercado Pago,2025-02-11,Pago DEVEREDASAS,-6500.00,,,mp
+sample,Mercado Pago,2025-02-08,Transferencia recibida Cliente Ejemplo SA,95000.00,,,mp
+sample,Dolar App,2025-02-20,Pago con tarjeta Netflix,-8500.00,,,dolar
+sample,Dolar App,2025-02-07,Pago con tarjeta Spotify,-4288.70,,,dolar
+sample,Caja de Ahorro,2025-02-10,DEBITO CUOTA PRESTAMO,-262000.00,,,caja

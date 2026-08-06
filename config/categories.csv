@@ -1,0 +1,87 @@
+Categoría,Subcategoría,Notas
+Alimentación,Supermercado,
+Alimentación,Verdulería/Carnicería,
+Alimentación,Kiosko/Panadería,
+Alimentación,Cafés/Snacks,
+Alimentación,Delivery,PedidosYa / Rappi
+Alimentación,Restaurantes/Bares,
+Alimentación,Comidas con amigos,ej. asados
+Alimentación,Comidas/Salidas en pareja,NUEVO
+Salidas & Ocio,Salidas nocturnas,
+Salidas & Ocio,Salidas en pareja,NUEVO
+Salidas & Ocio,Cine/Teatro/Shows,
+Salidas & Ocio,Eventos/Entradas,
+Salidas & Ocio,Juegos,
+Salidas & Ocio,Fútbol/Pádel,
+Salidas & Ocio,Truco,
+Salidas & Ocio,Libros/Videojuegos,
+Compras & Hogar,Ropa/Calzado,
+Compras & Hogar,Electrónica/Tecnología,
+Compras & Hogar,Artículos hogar,
+Compras & Hogar,Ferretería/Bazar,NUEVO
+Compras & Hogar,Regalos,
+Transporte,Combustible,
+Transporte,Uber/Cabify,incluye EBANX
+Transporte,Transporte público,
+Transporte,Estacionamiento/Peajes,
+Transporte,Auto (service/cubiertas),NUEVO
+Vivienda,Alquiler,ej. La Granjita (Estela Bustamante)
+Vivienda,Expensas,
+Vivienda,Cochera,
+Vivienda,Servicios (luz/gas/agua),Ecogas
+Vivienda,Teléfono,Personal (incluye internet/servicios)
+Vivienda,Internet/Cable,
+Vivienda,Mantenimiento,
+Salud & Bienestar,Obra social/Prepaga,
+Salud & Bienestar,Farmacia/Medicamentos,
+Salud & Bienestar,Consultas médicas,NUEVO
+Salud & Bienestar,Psicóloga,
+Salud & Bienestar,Nutricionista/Suplementos,
+Salud & Bienestar,Belleza/Peluquería,
+Suscripciones,Streaming,Netflix / Prime / HBO / Spotify / YouTube
+Suscripciones,Software/Apps,Microsoft / Claude / Apple
+Suscripciones,Membresías,Meli+
+Suscripciones,Gimnasio,Qivox
+Educación & Desarrollo,Cursos online,
+Educación & Desarrollo,Libros técnicos,
+Educación & Desarrollo,Universidad,
+Impuestos & Tasas,Contador/Monotributo,
+Impuestos & Tasas,AFIP/Rentas,
+Impuestos & Tasas,Tasa Municipal,
+Impuestos & Tasas,Patentes,
+Impuestos & Tasas,Multas,
+Impuestos & Tasas,Débito IVA 21%,
+Impuestos & Tasas,IIBB Córdoba 3%,
+Impuestos & Tasas,Impuesto al Sello,
+Impuestos & Tasas,Percepción 30% (ex Imp. País),
+Impuestos & Tasas,Percepción IVA Ss digitales,
+Servicios financieros,Cuotas tarjeta,
+Servicios financieros,Intereses/Comisiones,
+Servicios financieros,Seguros tarjeta,
+Servicios financieros,Retiro de efectivo/Cajero,NUEVO
+Mascotas,Comida mascota,
+Mascotas,Veterinario,
+Mascotas,Juguetes/Accesorios,
+Viajes,Pasajes,
+Viajes,Alojamiento,
+Viajes,Comida en viaje,
+Viajes,Actividades/Entradas,
+Viajes,Ropa/Calzado viaje,
+Viajes,Souvenirs/Shopping,
+Ahorro & Inversiones,Aporte ahorro,reservas Vacaciones
+Ahorro & Inversiones,Fondo emergencia,
+Ahorro & Inversiones,Dólares,
+Ahorro & Inversiones,Bolsa/Cripto,
+Ingresos,Salario ARS,
+Ingresos,Freelance/Consultoría,
+Ingresos,Salarios/Ingresos Ventas,
+Ingresos,Venta de bienes,
+Ingresos,Transferencia Personal,ayuda familiar
+Ingresos,Préstamos recibidos,
+Ingresos,Reembolsos,
+Ingresos,Intereses/Rendimientos,
+Ingresos,Otros ingresos,
+Movimiento,TRF Entre Cuentas,
+Movimiento,Compra/venta de dólares,
+Otros/Imprevistos,Otros/Imprevistos,catch-all
+Otros/Imprevistos,Donaciones,NUEVO

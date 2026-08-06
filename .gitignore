@@ -1,0 +1,15 @@
+# Datos financieros reales — NUNCA se suben al repo
+data/raw/
+data/interim/
+data/processed/
+# app/index.html SÍ se versiona, pero solo con el build de DEMO (data/sample).
+# Nunca commitees un build hecho con --real (tus números reales).
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# El demo público se reconstruye desde data/sample/ con:  python src/run_pipeline.py
