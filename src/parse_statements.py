@@ -130,7 +130,91 @@ def parse_dolarapp(path):
                         amount_ars=v, amount_usd='', cuota='', kind='dolarapp'))
     return out
 
-# parse_bbva_caja: pendiente (ver docs/architecture.md).
+def parse_bbva_caja(path):
+    """Movimientos de la caja de ahorro BBVA, leídos con pdfplumber por coordenadas.
+
+    Sección entre el encabezado (FECHA/CONCEPTO/…/CRÉDITO) y "TOTAL MOVIMIENTOS".
+    DÉBITO (x~385) y CRÉDITO (x~460) se separan por posición; el SALDO (x>500)
+    se ignora. Arrastra la última fecha para importes en renglones sin fecha.
+    Validado contra "TOTAL MOVIMIENTOS" (débitos y créditos, ene-jul).
+    """
+    import pdfplumber
+    out, year, seccion, last = [], '', False, None
+    with pdfplumber.open(path) as pdf:
+        full = pdf.pages[0].extract_text() or ''
+        y = re.search(r'al:\s*\d{2}/\d{2}/(\d{4})', full)
+        year = y.group(1) if y else ''
+        for page in pdf.pages:
+            rows = {}
+            for w in page.extract_words():
+                rows.setdefault(round(w['top'] / 3), []).append((w['x0'], w['text']))
+            for k in sorted(rows):
+                parts = sorted(rows[k]); toks = [t for _, t in parts]; line = " ".join(toks)
+                if 'CONCEPTO' in line and 'CR' in line.upper():
+                    seccion = True; continue
+                if 'TOTAL' in line and 'MOVIMIENTO' in line.upper():
+                    seccion = False; continue
+                if not seccion:
+                    continue
+                m = re.match(r'(\d{2})/(\d{2})$', toks[0])
+                if m:
+                    last = f"{year}-{m.group(2)}-{m.group(1)}"
+                deb = [ar(t) for x, t in parts if 360 <= x < 420 and _NUM.match(t)]
+                cre = [ar(t) for x, t in parts if 420 <= x < 500 and _NUM.match(t)]
+                val = deb[0] if deb else (cre[0] if cre else None)
+                if val is None or not last:
+                    continue
+                desc = " ".join(t for x, t in parts if 125 <= x < 360 and not _NUM.match(t))
+                out.append(dict(source='Caja', account='Caja de Ahorro', date=last,
+                                desc=desc.strip(), amount_ars=val, amount_usd='', cuota='', kind='caja'))
+    return out
+
+def parse_mercadopago_pdf(path):
+    """Resumen de Mercado Pago en PDF (formato distinto del CSV), con pdfplumber.
+
+    Sólo la sección de PESOS: arranca en la cabecera de la tabla (Fecha/Valor) y
+    corta al llegar a la sección en US$ (MP mete pesos y dólares en un mismo PDF).
+    La descripción se parte en varias líneas; se asigna cada palabra a la fecha
+    más cercana en Y. Validado contra Entradas/Salidas declaradas (abr-jul).
+    """
+    import pdfplumber
+    _isdate = lambda t: re.match(r'\d{2}-\d{2}-\d{4}$', t)
+    fechas, descs, started, in_usd = [], [], False, False
+    with pdfplumber.open(path) as pdf:
+        for pi, page in enumerate(pdf.pages):
+            rows = {}
+            for w in page.extract_words():
+                yy = w['top'] + pi * 2000
+                rows.setdefault(round(yy / 3), []).append((w['x0'], yy, w['text']))
+            for k in sorted(rows):
+                parts = sorted(rows[k]); toks = [t for _, _, t in parts]; text = " ".join(toks)
+                if not started:
+                    if 'Fecha' in toks and 'Valor' in toks:
+                        started = True
+                    continue
+                if 'US$' in text or 'EN US' in text.upper():
+                    in_usd = True
+                if in_usd:
+                    continue
+                if _isdate(toks[0]):
+                    val = [ar(t) for x, _, t in parts if 250 < x < 335 and _NUM.match(t)]
+                    if val:
+                        fechas.append([toks[0], parts[0][1], val[0], []])
+                for x, yy, t in parts:
+                    if 85 <= x < 196 and re.search(r'[A-Za-z]', t) and not _isdate(t):
+                        descs.append((yy, x, t))
+    for yy, x, t in descs:
+        if not fechas:
+            continue
+        i = min(range(len(fechas)), key=lambda j: abs(fechas[j][1] - yy))
+        fechas[i][3].append((yy, x, t))
+    out = []
+    for f, yy, val, dw in fechas:
+        dd, mm, yr = f.split('-')
+        desc = " ".join(t for _, _, t in sorted(dw)).strip()
+        out.append(dict(source='MP', account='Mercado Pago', date=f"{yr}-{mm}-{dd}",
+                        desc=desc, amount_ars=val, amount_usd='', cuota='', kind='mp'))
+    return out
 
 def detect_format(path):
     """Identifica el formato mirando el CONTENIDO del archivo, no su nombre.
@@ -188,9 +272,12 @@ def main():
             n = parse_dolarapp(f); rows += n
             etiq = f"DolarApp ARS ({len(n)} mov.)" if n else "DolarApp USD (conversiones, se omite)"
             print(f"[parse] OK  {f.name}: {etiq}")
-        elif fmt in ("bbva_caja", "mercadopago_pdf"):
-            pendientes.append((f.name, fmt))
-            print(f"[parse] ..  {f.name}: {fmt} detectado (lector pendiente, se omite)")
+        elif fmt == "bbva_caja":
+            n = parse_bbva_caja(f); rows += n
+            print(f"[parse] OK  {f.name}: Caja de ahorro ({len(n)} mov.)")
+        elif fmt == "mercadopago_pdf":
+            n = parse_mercadopago_pdf(f); rows += n
+            print(f"[parse] OK  {f.name}: Mercado Pago PDF ({len(n)} mov.)")
         else:
             desconocidos.append(f.name)
             print(f"[parse] ??  {f.name}: formato no reconocido, se saltea")
