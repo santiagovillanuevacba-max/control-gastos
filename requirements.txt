@@ -1,4 +1,5 @@
 PyYAML>=6.0
-# El parseo de PDFs usa `pdftotext` de poppler-utils (herramienta de sistema):
+pdfplumber>=0.11   # tarjetas BBVA: lectura por coordenadas (las columnas no se separan en texto plano)
+# El resto de los PDFs se leen con `pdftotext` (poppler-utils o xpdf, herramienta de sistema):
 #   Ubuntu/Debian:  sudo apt-get install poppler-utils
 #   macOS:          brew install poppler

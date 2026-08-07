@@ -39,31 +39,51 @@ def us(s):  # 1,234.56 -> float (formato US que usa DolarApp)
 MESES_EN = {'JAN':1,'FEB':2,'MAR':3,'APR':4,'MAY':5,'JUN':6,
             'JUL':7,'AUG':8,'SEP':9,'OCT':10,'NOV':11,'DEC':12}
 
-def parse_bbva_tarjeta(text, account):
-    """Resumen de tarjeta BBVA: bloque entre 'Consumos' y 'TOTAL CONSUMOS'."""
-    out, collecting = [], False
-    for ln in text.split('\n'):
-        if re.search(r'Consumos\s+\w', ln): collecting = True; continue
-        if 'TOTAL CONSUMOS' in ln: collecting = False; continue
-        if not collecting: continue
-        m = re.match(r'\s*(\d{2})-(\w{3})-(\d{2})\s+(.+)', ln)
-        if not m: continue
-        dd, mon, yy, rest = m.groups()
-        date = f"20{yy}-{MONTHS.get(mon,0):02d}-{int(dd):02d}"
-        cuota = ''
-        cm = re.search(r'C\.(\d{2})/(\d{2})', rest)
-        if cm: cuota = f"{int(cm.group(1))}/{int(cm.group(2))}"
-        nums = re.findall(r'-?\d{1,3}(?:\.\d{3})*,\d{2}', rest)
-        usd = 'USD' in rest.upper()
-        ars_v = usd_v = ''
-        if nums:
-            v = ar(nums[-1])
-            if usd: usd_v = v
-            else: ars_v = v
-        desc = re.sub(r'C\.\d{2}/\d{2}|-?\d{1,3}(?:\.\d{3})*,\d{2}|\bUSD\b', '', rest)
-        desc = re.sub(r'\s{2,}', ' ', desc).strip()
-        out.append(dict(source=account, account=account, date=date, desc=desc,
-                        amount_ars=ars_v, amount_usd=usd_v, cuota=cuota, kind='consumo'))
+_NUM = re.compile(r'^-?\d{1,3}(?:\.\d{3})*,\d{2}$')
+_DATE = re.compile(r'^(\d{2})-([A-Za-z]{3})-(\d{2})$')
+
+def _filas_pdf(page):
+    """Agrupa las palabras de la página en filas por su coordenada Y (top≈misma fila)."""
+    rows = {}
+    for w in page.extract_words():
+        rows.setdefault(round(w['top'] / 3), []).append((w['x0'], w['text']))
+    for k in sorted(rows):
+        yield sorted(rows[k])
+
+def parse_bbva_tarjeta(path, account):
+    """Consumos de una tarjeta BBVA (Visa/Master), leídos con pdfplumber.
+
+    pdftotext no alcanza: las 5 columnas (fecha·desc·cupón·PESOS·DÓLARES) se
+    desalinean y el importe queda pegado al consumo de al lado. pdfplumber lee
+    por coordenadas: separa PESOS (x~460) de DÓLARES (x~555) sin ambigüedad.
+    Sólo se toman los consumos (sección entre el encabezado "Consumos" y
+    "TOTAL CONSUMOS"); saldo anterior, pagos e impuestos se ignoran acá.
+    Validado: la suma de consumos cierra contra el resumen (Visa/Master, ene-jul).
+    """
+    import pdfplumber  # perezoso: el modo demo (data/sample) no lo necesita
+    out, seccion, last = [], None, None
+    with pdfplumber.open(path) as pdf:
+        for page in pdf.pages:
+            for parts in _filas_pdf(page):
+                toks = [t for _, t in parts]
+                if 'TOTAL CONSUMOS' in " ".join(toks).upper():
+                    seccion = None; continue
+                if toks[0] == 'Consumos' and len(toks) <= 8:   # encabezado de la sección
+                    seccion = 'consumos'; last = None; continue
+                if seccion != 'consumos':
+                    continue
+                m = _DATE.match(toks[0])
+                if m:  # arrastrar la última fecha (BBVA no la repite en cada renglón)
+                    last = f"20{m.group(3)}-{MONTHS.get(m.group(2), 0):02d}-{int(m.group(1)):02d}"
+                pesos = [ar(t) for x, t in parts if 440 <= x < 520 and _NUM.match(t)]
+                dolar = [ar(t) for x, t in parts if x >= 520 and _NUM.match(t)]
+                if not (pesos or dolar) or not last:
+                    continue
+                desc = " ".join(t for x, t in parts if 90 < x < 395 and not _NUM.match(t) and not _DATE.match(t))
+                cm = re.search(r'C\.(\d{2}/\d{2})', desc)
+                out.append(dict(source=account, account=account, date=last, desc=desc.strip(),
+                                amount_ars=pesos[0] if pesos else '', amount_usd=dolar[0] if dolar else '',
+                                cuota=cm.group(1) if cm else '', kind='consumo'))
     return out
 
 def parse_mercadopago(path):
@@ -159,11 +179,11 @@ def main():
             n = parse_mercadopago(f); rows += n
             print(f"[parse] OK  {f.name}: Mercado Pago ({len(n)} mov.)")
         elif fmt == "bbva_visa":
-            n = parse_bbva_tarjeta(text, "Visa Credito"); rows += n
-            print(f"[parse] OK  {f.name}: Visa ({len(n)} mov.)")
+            n = parse_bbva_tarjeta(f, "Visa Credito"); rows += n
+            print(f"[parse] OK  {f.name}: Visa ({len(n)} consumos)")
         elif fmt == "bbva_master":
-            n = parse_bbva_tarjeta(text, "Master Credito"); rows += n
-            print(f"[parse] OK  {f.name}: Master ({len(n)} mov.)")
+            n = parse_bbva_tarjeta(f, "Master Credito"); rows += n
+            print(f"[parse] OK  {f.name}: Master ({len(n)} consumos)")
         elif fmt == "dolarapp":
             n = parse_dolarapp(f); rows += n
             etiq = f"DolarApp ARS ({len(n)} mov.)" if n else "DolarApp USD (conversiones, se omite)"
