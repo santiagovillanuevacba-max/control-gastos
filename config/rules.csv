@@ -37,3 +37,4 @@ ecogas,Gasto,Servicios (luz/gas/agua),
 talleres,Gasto,Club (cuota social),cuota social club
 rappi,Gasto,Delivery,
 carrefour,Gasto,Supermercado,
+dolarapp mexico,Movimiento,Compra/venta de dólares,conversión/fondeo interno DolarApp (ARS<->USDc)

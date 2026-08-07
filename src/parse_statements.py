@@ -28,6 +28,17 @@ def ar(s):  # 1.234.567,89 -> float
     try: return float(s.strip().replace('.', '').replace(',', '.'))
     except: return None
 
+def pdf_text_raw(path):  # DolarApp: -raw alinea fecha+importe; -layout los desalinea
+    return subprocess.run(["pdftotext", "-raw", str(path), "-"],
+                          capture_output=True, text=True).stdout
+
+def us(s):  # 1,234.56 -> float (formato US que usa DolarApp)
+    try: return float(s.replace(',', ''))
+    except: return None
+
+MESES_EN = {'JAN':1,'FEB':2,'MAR':3,'APR':4,'MAY':5,'JUN':6,
+            'JUL':7,'AUG':8,'SEP':9,'OCT':10,'NOV':11,'DEC':12}
+
 def parse_bbva_tarjeta(text, account):
     """Resumen de tarjeta BBVA: bloque entre 'Consumos' y 'TOTAL CONSUMOS'."""
     out, collecting = [], False
@@ -67,8 +78,39 @@ def parse_mercadopago(path):
                         desc=p[1].strip(), amount_ars=v, amount_usd='', cuota='', kind='mp'))
     return out
 
-# parse_bbva_caja y parse_dolarapp: mismos principios (ver docs/architecture.md).
-# TODO: sus lectores todavía están pendientes; hoy se detectan pero no se parsean.
+def parse_dolarapp(path):
+    """Resumen ARS de DolarApp. Se lee con pdftotext -raw (que alinea fecha e
+    importe; -layout los desalinea y quedan mal apareados).
+
+    DolarApp emite 2 resúmenes por mes (ARS y USD). Los consumos se cuentan EN
+    PESOS desde el resumen ARS (decisión de Santi). El resumen USD son sólo
+    conversiones ARS<->USDc, así que se omite acá; esas líneas ("Enviado/Recibido
+    a DolarApp Mexico", "Conversión") se clasifican como Movimiento vía rules.csv.
+    """
+    text = pdf_text_raw(path)
+    if 'GARPA' not in text.upper():
+        return []  # el ARS lo emite "GARPA"; el USD dice "Dólares digitales": se omite
+    ym = re.search(r'Fecha de inicio\s+\d{1,2}\s+([A-Za-z]+)\s+(\d{4})', text)
+    year = ym.group(2) if ym else '0000'
+    rx = re.compile(r'^([A-Z][a-z]{2})\s+(\d{1,2})\s+.+?\s+([+-])\s+([\d,]+(?:\.\d+)?)\s+ARS\s+(.+)$')
+    out = []
+    for ln in text.split('\n'):
+        m = rx.match(ln.strip())
+        if not m:
+            continue
+        mon, dd, sign, amt, desc = m.groups()
+        mm = MESES_EN.get(mon.upper())
+        v = us(amt)
+        if not mm or v is None:
+            continue
+        if sign == '-':
+            v = -v
+        out.append(dict(source='DolarApp', account='DolarApp',
+                        date=f"{year}-{mm:02d}-{int(dd):02d}", desc=desc.strip(),
+                        amount_ars=v, amount_usd='', cuota='', kind='dolarapp'))
+    return out
+
+# parse_bbva_caja: pendiente (ver docs/architecture.md).
 
 def detect_format(path):
     """Identifica el formato mirando el CONTENIDO del archivo, no su nombre.
@@ -122,7 +164,11 @@ def main():
         elif fmt == "bbva_master":
             n = parse_bbva_tarjeta(text, "Master Credito"); rows += n
             print(f"[parse] OK  {f.name}: Master ({len(n)} mov.)")
-        elif fmt in ("bbva_caja", "dolarapp", "mercadopago_pdf"):
+        elif fmt == "dolarapp":
+            n = parse_dolarapp(f); rows += n
+            etiq = f"DolarApp ARS ({len(n)} mov.)" if n else "DolarApp USD (conversiones, se omite)"
+            print(f"[parse] OK  {f.name}: {etiq}")
+        elif fmt in ("bbva_caja", "mercadopago_pdf"):
             pendientes.append((f.name, fmt))
             print(f"[parse] ..  {f.name}: {fmt} detectado (lector pendiente, se omite)")
         else:
