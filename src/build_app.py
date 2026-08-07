@@ -261,7 +261,10 @@ function renderMes(){
       <div class="grow"><div class="t">${c}</div><div class="m">${items.length} mov.</div></div>
       <div class="amt">${F(tot)}</div><span class="chev">▶</span></div>
       <div class="sub-rows">${items.sort((a,b)=>expenseArs(b)-expenseArs(a)).map(t=>`
-        <div class="row"><div class="grow"><div class="t">${cleanDesc(t)}</div><div class="m">${t.date.slice(8)}/${t.date.slice(5,7)} · ${t.account} · ${subName(catOf(t))}${t.cuota?' · cuota '+t.cuota:''}</div></div><div class="amt">${F(expenseArs(t))}</div></div>`).join('')}</div>
+        <div class="row"><div class="grow"><div class="t">${cleanDesc(t)}</div>
+          <div class="m">${t.date.slice(8)}/${t.date.slice(5,7)} · ${t.account}${t.cuota?' · cuota '+t.cuota:''}</div>
+          <select class="catsel done" style="margin-top:5px;max-width:100%" onchange="setCat('${t.id}',this.value)">${catOptions(catOf(t))}</select>
+        </div><div class="amt">${F(expenseArs(t))}</div></div>`).join('')}</div>
     </div>`).join('')||'<div class="row"><div class="t">Sin gastos</div></div>';
   // ingresos
   const inc=tx.filter(t=>incomeArs(t)>0);
