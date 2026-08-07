@@ -20,7 +20,10 @@ def step(name, args):
 if REAL:
     step("parse_statements.py", [])                     # data/raw -> data/interim/all_tx.csv
     step("transform.py", [str(ROOT.parent / "data" / "interim" / "all_tx.csv")])
+    # datos reales -> HTML en carpeta gitignored (NUNCA se sube al repo)
+    out = str(ROOT.parent / "data" / "processed" / "app.html")
 else:
     step("transform.py", [str(ROOT.parent / "data" / "sample" / "all_tx.csv")])
-step("build_app.py", [])
-print("\n[OK] Pipeline completo. Abri app/index.html")
+    out = str(ROOT.parent / "app" / "index.html")       # demo público
+step("build_app.py", [out])
+print(f"\n[OK] Pipeline completo. App generada en: {out}")

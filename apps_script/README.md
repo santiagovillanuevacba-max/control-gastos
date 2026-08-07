@@ -3,13 +3,14 @@
 Objetivo: tener la app privada, con su propia URL, y un ícono en la pantalla del
 celu — sin pasar por Claude. Los datos siguen siendo privados (solo tu cuenta).
 
-La app web **lee `app/index.html` de tu Google Drive**, así que cuando actualizás
-los datos (`python src/run_pipeline.py --real`) la web se actualiza sola, sin
-volver a publicar.
+La app web **lee `data/processed/app.html` de tu Google Drive** (esa es la app
+con tus datos REALES; `app/index.html` es solo la demo pública). Cuando
+actualizás los datos (`python src/run_pipeline.py --real`) la web se actualiza
+sola, sin volver a publicar.
 
 ## Paso 1 — Conseguir el ID del archivo en Drive
 1. Entrá a [drive.google.com](https://drive.google.com) y buscá el archivo
-   `app/index.html` (está en `Control Gastos Santi/.../control-gastos/app/`).
+   `app.html` (está en `Control Gastos Santi/.../control-gastos/data/processed/`).
 2. Click derecho → **Compartir** → **Copiar vínculo**.
 3. El link es así: `https://drive.google.com/file/d/`**`ESTO_ES_EL_ID`**`/view`.
    Copiá el pedazo del medio (el ID).
@@ -36,5 +37,5 @@ volver a publicar.
 
 ## Actualizar los datos más adelante
 Solo corré `python src/run_pipeline.py --real` en la compu. Se regenera
-`app/index.html` en el Drive y la web toma la versión nueva sola. No toques
-Apps Script de nuevo.
+`data/processed/app.html` en el Drive y la web toma la versión nueva sola. No
+toques Apps Script de nuevo.

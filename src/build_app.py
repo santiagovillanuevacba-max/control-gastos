@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json
+import json, sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 DATA = json.load(open(ROOT/'data'/'processed'/'app_data.json', encoding='utf-8'))
@@ -344,7 +344,9 @@ renderResumen();renderFuturo();renderCargar();
 </html>'''
 
 HTML = HTML.replace('__DATA__', DATA_JS)
-(ROOT/'app').mkdir(exist_ok=True)
-_out=ROOT/'app'/'index.html'
+# Salida configurable: demo -> app/index.html (público); real -> ruta gitignored
+# (ver run_pipeline.py). Así los datos reales nunca quedan en el HTML versionado.
+_out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT/'app'/'index.html'
+_out.parent.mkdir(parents=True, exist_ok=True)
 open(_out,'w',encoding='utf-8').write(HTML)
-print(f"[build_app] app/index.html generada ({round(len(HTML)/1024)} KB)")
+print(f"[build_app] {_out.relative_to(ROOT)} generada ({round(len(HTML)/1024)} KB)")
