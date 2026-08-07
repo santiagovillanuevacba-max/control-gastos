@@ -23,4 +23,4 @@ if REAL:
 else:
     step("transform.py", [str(ROOT.parent / "data" / "sample" / "all_tx.csv")])
 step("build_app.py", [])
-print("\n✔ Pipeline completo. Abrí app/index.html")
+print("\n[OK] Pipeline completo. Abri app/index.html")
