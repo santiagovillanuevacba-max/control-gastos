@@ -110,8 +110,10 @@ def parse_dolarapp(path):
     text = pdf_text_raw(path)
     if 'GARPA' not in text.upper():
         return []  # el ARS lo emite "GARPA"; el USD dice "Dólares digitales": se omite
-    ym = re.search(r'Fecha de inicio\s+\d{1,2}\s+([A-Za-z]+)\s+(\d{4})', text)
-    year = ym.group(2) if ym else '0000'
+    # El año sale del encabezado en modo -layout (ahí "Fecha de inicio" y el valor
+    # van en la misma línea; en -raw quedan separados y el regex falla).
+    ym = re.search(r'Fecha de inicio\s+\d{1,2}\s+[A-Za-z]+\s+(\d{4})', pdf_text(path))
+    year = ym.group(1) if ym else '2026'
     rx = re.compile(r'^([A-Z][a-z]{2})\s+(\d{1,2})\s+.+?\s+([+-])\s+([\d,]+(?:\.\d+)?)\s+ARS\s+(.+)$')
     out = []
     for ln in text.split('\n'):
@@ -141,9 +143,9 @@ def parse_bbva_caja(path):
     import pdfplumber
     out, year, seccion, last = [], '', False, None
     with pdfplumber.open(path) as pdf:
-        full = pdf.pages[0].extract_text() or ''
-        y = re.search(r'al:\s*\d{2}/\d{2}/(\d{4})', full)
-        year = y.group(1) if y else ''
+        full = "\n".join((p.extract_text() or '') for p in pdf.pages)  # el "al:" puede estar en cualquier página
+        y = re.search(r'al:\s*\d{2}/\d{2}/(\d{4})', full) or re.search(r'\b\d{2}/\d{2}/(20\d{2})', full)
+        year = y.group(1) if y else '2026'
         for page in pdf.pages:
             rows = {}
             for w in page.extract_words():

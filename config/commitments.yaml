@@ -10,12 +10,12 @@ recurrente_mensual:            # fijos y suscripciones que se repiten todos los 
   Servicios hogar: 9327
   Suscripciones: 120000
 
-cuotas_tarjeta:                # cuotas de tarjeta a vencer, por mes
-  2025-03: 87696
-  2025-04: 87696
-  2025-05: 56667
+cuotas_tarjeta:                # cuotas de tarjeta a vencer, por mes (PLACEHOLDER: rebuild desde datos reales)
+  2026-08: 87696
+  2026-09: 87696
+  2026-10: 56667
 
-prestamo:                      # cuotas de préstamo, por mes
-  2025-03: 262613
-  2025-04: 259647
-  2025-05: 256523
+prestamo:                      # cuotas de préstamo, por mes (PLACEHOLDER: sacar de "Próximos vencimientos" de la Caja)
+  2026-08: 262613
+  2026-09: 259647
+  2026-10: 256523

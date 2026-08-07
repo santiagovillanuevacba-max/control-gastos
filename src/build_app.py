@@ -338,6 +338,8 @@ document.getElementById('tabbar').addEventListener('click',e=>{const b=e.target.
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));document.getElementById('tab-'+tab).classList.add('on');
   if(tab==='mes')renderMes();if(tab==='futuro')renderFuturo();if(tab==='cargar')renderCargar();window.scrollTo(0,0);});
 
+// encabezado dinámico según el rango real de meses cargados
+if(MONTHS.length)document.getElementById('hdr').textContent=`Santi · ${monLabel(MONTHS[0])}–${monLabel(MONTHS[MONTHS.length-1])} · ${allTx().length} movimientos`;
 renderResumen();renderFuturo();renderCargar();
 </script>
 </body>
