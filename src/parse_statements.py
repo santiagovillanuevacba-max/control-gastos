@@ -68,24 +68,76 @@ def parse_mercadopago(path):
     return out
 
 # parse_bbva_caja y parse_dolarapp: mismos principios (ver docs/architecture.md).
+# TODO: sus lectores todavía están pendientes; hoy se detectan pero no se parsean.
+
+def detect_format(path):
+    """Identifica el formato mirando el CONTENIDO del archivo, no su nombre.
+
+    Así el archivo puede llamarse como sea (incluso con typos): lo que manda es
+    lo que dice adentro. Devuelve (formato, texto) donde `texto` es el texto ya
+    extraído del PDF (o None para CSV), para no volver a leerlo después.
+    """
+    suf = path.suffix.lower()
+    if suf == ".csv":
+        head = path.read_text(encoding="utf-8", errors="replace")[:2000].upper()
+        if "RELEASE_DATE" in head and "TRANSACTION_NET_AMOUNT" in head:
+            return "mercadopago", None
+        return None, None
+    if suf == ".pdf":
+        text = pdf_text(path)
+        up = text.upper()
+        head = up[:2000]  # el encabezado alcanza para identificar la cuenta
+        # Caja y DolarApp: huellas muy distintivas en el encabezado.
+        if "CUENTAS Y PAQUETES" in head:
+            return "bbva_caja", text
+        if "ESTADO DE CUENTA" in head and ("GARPA" in up or "BALANCE DE INICIO" in up):
+            return "dolarapp", text
+        # Mercado Pago en PDF (distinto del CSV): título + CVU (billetera, no CBU).
+        if "RESUMEN DE CUENTA" in head and "CVU" in up:
+            return "mercadopago_pdf", text
+        # Tarjetas BBVA: el código R.N.P.S.P. "731 V01"/"731 M01" es la huella
+        # única de cada tarjeta. NO mirar todo el doc: un resumen Visa menciona
+        # "Mastercard" en la letra chica de comisiones (y viceversa).
+        if "731 M01" in head or ("MASTERCARD" in head and "VISA" not in head):
+            return "bbva_master", text
+        if "731 V01" in head or ("VISA" in head and "MASTERCARD" not in head):
+            return "bbva_visa", text
+    return None, None
 
 def main():
-    rows = []
     if not RAW.exists():
-        print(f"[parse] No hay data/raw/. Poné ahí los resúmenes reales. (El demo usa data/sample/)")
+        print("[parse] No hay data/raw/. Poné ahí los resúmenes (con cualquier nombre).")
         return
+    rows, pendientes, desconocidos = [], [], []
     for f in sorted(RAW.glob("**/*")):
-        low = f.name.lower()
-        if low.endswith(".csv") and "mercado" in low:
-            rows += parse_mercadopago(f)
-        elif low.endswith(".pdf") and ("visa" in low or "master" in low):
-            acc = "Visa Credito" if "visa" in low else "Master Credito"
-            rows += parse_bbva_tarjeta(pdf_text(f), acc)
+        if not f.is_file():
+            continue
+        fmt, text = detect_format(f)
+        if fmt == "mercadopago":
+            n = parse_mercadopago(f); rows += n
+            print(f"[parse] OK  {f.name}: Mercado Pago ({len(n)} mov.)")
+        elif fmt == "bbva_visa":
+            n = parse_bbva_tarjeta(text, "Visa Credito"); rows += n
+            print(f"[parse] OK  {f.name}: Visa ({len(n)} mov.)")
+        elif fmt == "bbva_master":
+            n = parse_bbva_tarjeta(text, "Master Credito"); rows += n
+            print(f"[parse] OK  {f.name}: Master ({len(n)} mov.)")
+        elif fmt in ("bbva_caja", "dolarapp", "mercadopago_pdf"):
+            pendientes.append((f.name, fmt))
+            print(f"[parse] ..  {f.name}: {fmt} detectado (lector pendiente, se omite)")
+        else:
+            desconocidos.append(f.name)
+            print(f"[parse] ??  {f.name}: formato no reconocido, se saltea")
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=["source","account","date","desc","amount_ars","amount_usd","cuota","kind"])
         w.writeheader(); w.writerows(rows)
     print(f"[parse] {len(rows)} transacciones -> {OUT.relative_to(ROOT)}")
+    if pendientes:
+        print(f"[parse] pendientes de lector: {', '.join(n for n, _ in pendientes)}")
+    if desconocidos:
+        print(f"[parse] no reconocidos: {', '.join(desconocidos)}")
 
 if __name__ == "__main__":
     main()
