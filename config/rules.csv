@@ -38,3 +38,12 @@ talleres,Gasto,Club (cuota social),cuota social club
 rappi,Gasto,Delivery,
 carrefour,Gasto,Supermercado,
 dolarapp mexico,Movimiento,Compra/venta de dólares,conversión/fondeo interno DolarApp (ARS<->USDc)
+arcos dorados,Gasto,Restaurantes/Bares,McDonald's
+perdu,Gasto,Kiosko/Panadería,panadería
+tregua,Gasto,Restaurantes/Bares,bar
+lojas renner,Gasto,Ropa/Calzado,
+lfbazar,Gasto,Ferretería/Bazar,
+intereses ganados,Ingreso,Intereses/Rendimientos,
+tarjeta comisi,Gasto,Intereses/Comisiones,comisión DolarApp
+pagos con tarjeta cr,Gasto,Intereses/Comisiones,comisión DolarApp
+debito cuota 291-96,Gasto,Cuotas tarjeta,cuota préstamo (revisar taxonomía)
