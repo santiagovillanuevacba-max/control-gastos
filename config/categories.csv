@@ -6,9 +6,9 @@ Alimentación,Cafés/Snacks,
 Alimentación,Delivery,PedidosYa / Rappi
 Alimentación,Restaurantes/Bares,
 Alimentación,Comidas con amigos,ej. asados
-Alimentación,Comidas/Salidas en pareja,NUEVO
+Alimentación,Comidas en pareja,
 Salidas & Ocio,Salidas nocturnas,
-Salidas & Ocio,Salidas en pareja,NUEVO
+Salidas & Ocio,Salidas en pareja,todo lo que no es comida
 Salidas & Ocio,Cine/Teatro/Shows,
 Salidas & Ocio,Eventos/Entradas,
 Salidas & Ocio,Juegos,
@@ -18,23 +18,27 @@ Salidas & Ocio,Libros/Videojuegos,
 Compras & Hogar,Ropa/Calzado,
 Compras & Hogar,Electrónica/Tecnología,
 Compras & Hogar,Artículos hogar,
-Compras & Hogar,Ferretería/Bazar,NUEVO
+Compras & Hogar,Ferretería/Bazar,
 Compras & Hogar,Regalos,
 Transporte,Combustible,
 Transporte,Uber/Cabify,incluye EBANX
 Transporte,Transporte público,
 Transporte,Estacionamiento/Peajes,
-Transporte,Auto (service/cubiertas),NUEVO
+Transporte,Auto (service/cubiertas),
+Transporte,Lavadero de auto,
 Vivienda,Alquiler,ej. La Granjita (Estela Bustamante)
 Vivienda,Expensas,
 Vivienda,Cochera,
 Vivienda,Servicios (luz/gas/agua),Ecogas
 Vivienda,Teléfono,Personal (incluye internet/servicios)
-Vivienda,Internet/Cable,
+Vivienda,Internet/Cable,cable/fibra aparte de Personal
+Vivienda,Mudanza/Flete,
 Vivienda,Mantenimiento,
 Salud & Bienestar,Obra social/Prepaga,
 Salud & Bienestar,Farmacia/Medicamentos,
-Salud & Bienestar,Consultas médicas,NUEVO
+Salud & Bienestar,Consultas médicas,
+Salud & Bienestar,Dentista/Odontología,
+Salud & Bienestar,Óptica/Lentes,
 Salud & Bienestar,Psicóloga,
 Salud & Bienestar,Nutricionista/Suplementos,
 Salud & Bienestar,Belleza/Peluquería,
@@ -42,6 +46,7 @@ Suscripciones,Streaming,Netflix / Prime / HBO / Spotify / YouTube
 Suscripciones,Software/Apps,Microsoft / Claude / Apple
 Suscripciones,Membresías,Meli+
 Suscripciones,Gimnasio,Qivox
+Suscripciones,Club (cuota social),Talleres
 Educación & Desarrollo,Cursos online,
 Educación & Desarrollo,Libros técnicos,
 Educación & Desarrollo,Universidad,
@@ -58,7 +63,7 @@ Impuestos & Tasas,Percepción IVA Ss digitales,
 Servicios financieros,Cuotas tarjeta,
 Servicios financieros,Intereses/Comisiones,
 Servicios financieros,Seguros tarjeta,
-Servicios financieros,Retiro de efectivo/Cajero,NUEVO
+Servicios financieros,Retiro de efectivo/Cajero,
 Mascotas,Comida mascota,
 Mascotas,Veterinario,
 Mascotas,Juguetes/Accesorios,
@@ -72,9 +77,8 @@ Ahorro & Inversiones,Aporte ahorro,reservas Vacaciones
 Ahorro & Inversiones,Fondo emergencia,
 Ahorro & Inversiones,Dólares,
 Ahorro & Inversiones,Bolsa/Cripto,
-Ingresos,Salario ARS,
-Ingresos,Freelance/Consultoría,
-Ingresos,Salarios/Ingresos Ventas,
+Ingresos,Salario,relación de dependencia
+Ingresos,Clientes/Freelance,honorarios de clientes / consultoría
 Ingresos,Venta de bienes,
 Ingresos,Transferencia Personal,ayuda familiar
 Ingresos,Préstamos recibidos,
@@ -84,4 +88,4 @@ Ingresos,Otros ingresos,
 Movimiento,TRF Entre Cuentas,
 Movimiento,Compra/venta de dólares,
 Otros/Imprevistos,Otros/Imprevistos,catch-all
-Otros/Imprevistos,Donaciones,NUEVO
+Otros/Imprevistos,Donaciones,
