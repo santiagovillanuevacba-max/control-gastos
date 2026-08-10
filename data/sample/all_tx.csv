@@ -44,3 +44,7 @@ sample,Mercado Pago,2025-02-08,Transferencia recibida Cliente Ejemplo SA,95000.0
 sample,Dolar App,2025-02-20,Pago con tarjeta Netflix,-8500.00,,,dolar
 sample,Dolar App,2025-02-07,Pago con tarjeta Spotify,-4288.70,,,dolar
 sample,Caja de Ahorro,2025-02-10,DEBITO CUOTA PRESTAMO,-262000.00,,,caja
+sample,Caja de Ahorro,2025-01-31,DEPOSITO SUELDO ESTUDIO CONTABLE,950000.00,,,caja
+sample,Caja de Ahorro,2025-02-28,DEPOSITO SUELDO ESTUDIO CONTABLE,980000.00,,,caja
+sample,Mercado Pago,2025-01-27,Transferencia recibida Cliente Ejemplo SA,180000.00,,,mp
+sample,Mercado Pago,2025-02-24,Transferencia recibida Cliente Ejemplo SA,220000.00,,,mp

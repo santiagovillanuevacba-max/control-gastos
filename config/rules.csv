@@ -59,3 +59,5 @@ manuel somoza,Gasto,Comidas con amigos,asado con amigos
 mercadolibre,Gasto,Artículos hogar,compras del hogar
 dólar mep,Movimiento,Compra/venta de dólares,compra/venta de dólares MEP
 maria carolina marconi,Movimiento,Compensación,novia (le pago algo y me reintegra)
+deposito sueldo,Ingreso,Salario,
+cliente ejemplo,Ingreso,Clientes/Freelance,demo
