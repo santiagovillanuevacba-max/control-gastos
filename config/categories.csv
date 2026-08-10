@@ -87,5 +87,6 @@ Ingresos,Intereses/Rendimientos,
 Ingresos,Otros ingresos,
 Movimiento,TRF Entre Cuentas,
 Movimiento,Compra/venta de dólares,
+Movimiento,Compensación,pago por otro que te reintegran (ej. pareja) — no es gasto ni ingreso
 Otros/Imprevistos,Otros/Imprevistos,catch-all
 Otros/Imprevistos,Donaciones,
