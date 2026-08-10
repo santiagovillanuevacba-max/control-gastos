@@ -10,7 +10,7 @@ data/processed/app_data.json, que consume la app web.
 Todo es config-driven: las reglas, las categorías y las cuentas viven en /config,
 así el proyecto se replica para otra persona sin tocar el código.
 """
-import csv, json, re, sys, os
+import csv, json, re, sys, os, unicodedata
 from pathlib import Path
 from collections import defaultdict
 import yaml
@@ -18,9 +18,14 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config"
 
+def noac(s):
+    """minúsculas y sin acentos, para que las reglas matcheen 'dólares' == 'dolares'."""
+    s = unicodedata.normalize("NFD", (s or "").lower())
+    return "".join(c for c in s if unicodedata.category(c) != "Mn")
+
 def load_rules():
     rows = list(csv.DictReader(open(CONFIG / "rules.csv", encoding="utf-8")))
-    return [(r["texto_contiene"].lower(), r["tipo"], r["subcategoria"]) for r in rows]
+    return [(noac(r["texto_contiene"]), r["tipo"], r["subcategoria"]) for r in rows]
 
 def load_taxonomy():
     tax = defaultdict(list)
@@ -57,7 +62,11 @@ def main(inp):
     EXPL = re.compile(r"pago de tarjeta|pago visa|pago mast|recibido de dolarapp|"
                       r"enviado a dolarapp|env[ií]o a dolarapp|env[ií]o ars", re.I)
     for r in rows:
+        d = (r["desc"] or "").lower()
         r["internal"] = bool(EXPL.search(r["desc"] or ""))
+        # transferencia a/desde uno mismo (nombre del titular) = interna, no ingreso ni gasto
+        if titular and len(titular) >= 2 and all(w in d for w in titular):
+            r["internal"] = True
     by_key = defaultdict(list)
     for i, r in enumerate(rows):
         if r["amount_ars"]:
@@ -73,20 +82,25 @@ def main(inp):
 
     # --- categorización ---
     def classify(t):
-        dl = (t["desc"] or "").lower()
+        dl = noac(t["desc"])
         for txt, tipo, sub in rules:
             if txt and txt in dl:
                 if tipo == "Movimiento": return ("Movimiento", sub or "TRF Entre Cuentas", "mov")
                 if tipo == "Ahorro": return ("Ahorro & Inversiones", sub, "ahorro")
                 if tipo == "Ingreso": return ("Ingresos", sub, "ingreso")
                 return (subparent.get(sub, "Otros/Imprevistos"), sub, "gasto")
-        if t["account"] == "Mercado Pago" and "recibida" in dl and t["amount_ars"] > 0:
+        # ingreso: cualquier crédito recibido y positivo (transferencias, depósitos).
+        # Las transferencias a uno mismo ya se marcaron internas antes, así que acá
+        # sólo caen las que vienen de terceros.
+        if t["amount_ars"] > 0 and re.search(r"recibida|transferencia|deposito|dnet credito", dl):
             return ("Ingresos", "Otros ingresos", "ingreso")
         return ("", "", "pend")
 
     for r in rows:
         c, s, k = classify(r)
-        if k == "mov" or (r["internal"] and k != "ingreso"):
+        # una transferencia interna (a uno mismo / pago de tarjeta / conversión) SIEMPRE
+        # es Movimiento, aunque parezca ingreso: es plata propia moviéndose de cuenta.
+        if k == "mov" or r["internal"]:
             r["cat"], r["subcat"], r["flow"] = "Movimiento", "TRF Entre Cuentas", "mov"
             r["internal"] = True
         else:

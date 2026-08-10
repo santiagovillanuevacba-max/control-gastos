@@ -1,7 +1,7 @@
 # Cuentas del usuario. Config-driven: para replicar el proyecto para otra persona,
 # se cambian estas cuentas y las reglas de config/rules.csv — el código no se toca.
 
-titular: "Nombre Apellido"           # usado para detectar transferencias entre cuentas propias
+titular: "Santiago Villanueva"       # usado para detectar transferencias entre cuentas propias
 
 cuentas:
   - id: visa_credito
