@@ -194,7 +194,7 @@ function incomeArs(t){
   if(catName(v)!=='Ingresos') return 0;
   return t.ars>0?t.ars:(t.kind==='consumo'&&t.ars<0?-t.ars:0);
 }
-const isFamily=t=>subName(catOf(t))==='Transferencia Personal';
+const isEarned=t=>['Salario','Clientes/Freelance'].includes(subName(catOf(t)));
 const allTx=()=>DATA.tx.concat(MAN);
 const MONTHS=DATA.months;
 
@@ -206,13 +206,13 @@ function monthCats(m){
   const o={};allTx().forEach(t=>{if(t.month!==m)return;const e=expenseArs(t);if(!e)return;const c=catName(catOf(t))||'Sin categoría';o[c]=(o[c]||0)+e;});return o;
 }
 function monthTotals(m){
-  let gasto=0,propio=0,ayuda=0,pend=0;
+  let gasto=0,propio=0,otros=0,pend=0;
   allTx().forEach(t=>{if(t.month!==m)return;
     gasto+=expenseArs(t);
-    const inc=incomeArs(t); if(inc){if(isFamily(t))ayuda+=inc;else propio+=inc;}
+    const inc=incomeArs(t); if(inc){if(isEarned(t))propio+=inc;else otros+=inc;}
     if(!t.internal && !catOf(t) && expenseArs(t)>0) pend++;
   });
-  return {gasto,propio,ayuda,pend};
+  return {gasto,propio,otros,pend};
 }
 
 let curMonth=MONTHS[MONTHS.length-1];
@@ -225,11 +225,11 @@ function setResMonth(m){curMonth=m;renderResumen();}
 function renderResumen(){
   segMonths('r-months','setResMonth');
   const t=monthTotals(curMonth);
-  const bal=t.propio+t.ayuda-t.gasto;
+  const bal=t.propio+t.otros-t.gasto;
   document.getElementById('r-kpis').innerHTML=`
-    <div class="kpi big ${bal>=0?'good':'bad'}"><div class="l">Balance de ${monLabel(curMonth)}</div><div class="v">${F(bal)}</div><div class="n">ingresos ${Fk(t.propio+t.ayuda)} − gastos ${Fk(t.gasto)}</div></div>
-    <div class="kpi"><div class="l">Ingreso propio</div><div class="v">${Fk(t.propio)}</div><div class="n">tu plata</div></div>
-    <div class="kpi warn"><div class="l">Ayuda familiar</div><div class="v">${Fk(t.ayuda)}</div><div class="n">de tu viejo</div></div>
+    <div class="kpi big ${bal>=0?'good':'bad'}"><div class="l">Balance de ${monLabel(curMonth)}</div><div class="v">${F(bal)}</div><div class="n">ingresos ${Fk(t.propio+t.otros)} − gastos ${Fk(t.gasto)}</div></div>
+    <div class="kpi"><div class="l">Ingreso propio</div><div class="v">${Fk(t.propio)}</div><div class="n">sueldo y clientes</div></div>
+    <div class="kpi warn"><div class="l">Otros ingresos</div><div class="v">${Fk(t.otros)}</div><div class="n">transfers, reintegros</div></div>
     <div class="kpi accent"><div class="l">Gasto del mes</div><div class="v">${Fk(t.gasto)}</div></div>
     <div class="kpi ${t.pend?'warn':''}"><div class="l">Pendientes</div><div class="v">${t.pend}</div><div class="n">sin categoría</div></div>`;
   const cats=Object.entries(monthCats(curMonth)).sort((a,b)=>b[1]-a[1]);
@@ -268,7 +268,7 @@ function renderMes(){
     </div>`).join('')||'<div class="row"><div class="t">Sin gastos</div></div>';
   // ingresos
   const inc=tx.filter(t=>incomeArs(t)>0);
-  document.getElementById('m-inc').innerHTML=inc.map(t=>`<div class="row"><div class="grow"><div class="t">${cleanDesc(t)}</div><div class="m">${t.date.slice(8)}/${t.date.slice(5,7)} · ${isFamily(t)?'Ayuda familiar':subName(catOf(t))}</div></div><div class="amt in">+${F(incomeArs(t))}</div></div>`).join('')||'<div class="row"><div class="t">Sin ingresos</div></div>';
+  document.getElementById('m-inc').innerHTML=inc.map(t=>`<div class="row"><div class="grow"><div class="t">${cleanDesc(t)}</div><div class="m">${t.date.slice(8)}/${t.date.slice(5,7)} · ${subName(catOf(t))||'Otros ingresos'}</div></div><div class="amt in">+${F(incomeArs(t))}</div></div>`).join('')||'<div class="row"><div class="t">Sin ingresos</div></div>';
   // movimientos internos
   const mov=tx.filter(t=>t.internal);
   const movt=mov.reduce((s,t)=>s+Math.abs(t.ars),0)/2;

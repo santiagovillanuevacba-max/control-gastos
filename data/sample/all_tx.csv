@@ -48,3 +48,5 @@ sample,Caja de Ahorro,2025-01-31,DEPOSITO SUELDO ESTUDIO CONTABLE,950000.00,,,ca
 sample,Caja de Ahorro,2025-02-28,DEPOSITO SUELDO ESTUDIO CONTABLE,980000.00,,,caja
 sample,Mercado Pago,2025-01-27,Transferencia recibida Cliente Ejemplo SA,180000.00,,,mp
 sample,Mercado Pago,2025-02-24,Transferencia recibida Cliente Ejemplo SA,220000.00,,,mp
+sample,Mercado Pago,2025-01-24,Transferencia recibida Reintegro gastos,48000.00,,,mp
+sample,Mercado Pago,2025-02-22,Transferencia recibida Reintegro gastos,95000.00,,,mp

@@ -1,8 +1,10 @@
 # 💸 Control de Gastos — pipeline de finanzas personales
 
-Automatización end-to-end que convierte los resúmenes de cuenta de un banco (PDF) y de
-Mercado Pago (CSV) en una app web de control de gastos, sin carga manual: parsea, limpia,
-categoriza y proyecta los compromisos futuros de forma automática.
+Automatización end-to-end que lee los resúmenes de cinco cuentas (tarjetas de crédito BBVA,
+caja de ahorro, DolarApp y Mercado Pago) en **seis formatos distintos** de PDF/CSV y los
+convierte en una app web de control de gastos, sin carga manual. Detecta cada formato **por su
+contenido** (no por el nombre del archivo), parsea, **valida al centavo** contra los totales del
+resumen, categoriza y proyecta los compromisos futuros.
 
 > Proyecto personal y a la vez pieza de portfolio de **ingeniería de datos + BI**.
 > Los datos del demo son **ficticios**; los datos reales nunca se suben al repo.
@@ -20,13 +22,16 @@ en lo repetitivo (resúmenes) y de **mínima fricción** en lo variable (Mercado
 
 ## Qué hace
 
-- **Ingesta + parseo** de resúmenes de BBVA (PDF, con `pdftotext`) y Mercado Pago (CSV).
-- **Validación contable**: cada import se cuadra contra el total de control del resumen.
-- **Categorización automática** con reglas configurables (un "machete" texto → categoría) +
-  memoria de destinatarios editable.
-- **Compensación de transferencias internas** entre cuentas propias (no cuentan como gasto).
-- **Proyección de compromisos futuros** (cuotas de tarjeta, préstamos, suscripciones).
-- **App web** mobile-first (una sola página, sin backend) para ver y categorizar desde el celu.
+- **Ingesta + parseo** de 6 formatos (BBVA tarjeta y caja, DolarApp, Mercado Pago CSV y PDF),
+  detectados **por contenido**. Las tablas con columnas desalineadas se leen por **coordenadas**
+  con `pdfplumber`; el resto con `pdftotext`.
+- **Validación contable**: cada cuenta se cuadra **al centavo** contra el total de control del resumen.
+- **Categorización automática (~80%)** con reglas configurables (un "machete" texto → categoría) +
+  memoria de destinatarios y recategorización de cualquier movimiento desde la app.
+- **Modelado de dominio**: transferencias internas, compensaciones con terceros, compra/venta de
+  dólares y percepción sobre consumos en USD, todo tratado como corresponde (no infla el gasto).
+- **App web** mobile-first (una sola página, sin backend), servible **privada desde el celu**
+  vía Google Apps Script.
 
 ## Arquitectura
 
@@ -47,13 +52,14 @@ se **replica** para otra persona sin tocar el código.
 
 ## Stack
 
-`Python` (ETL) · `pdftotext` (poppler) · `Google Sheets` (base de datos) ·
-`Looker Studio` (dashboards) · `HTML/JS` (app) · `GitHub Actions` (orquestación).
+`Python 3` (ETL, sin frameworks) · `pdfplumber` + `pdftotext` (lectura de PDF) · `PyYAML` (config) ·
+`HTML/JS` vanilla (app) · `Google Apps Script` (deploy privado en el celu) · `Git` / `GitHub`.
+*Roadmap:* `Google Sheets` + `Looker Studio` para la capa de análisis pesado.
 
 ## Correr el demo
 
 ```bash
-pip install -r requirements.txt         # PyYAML
+pip install -r requirements.txt         # PyYAML + pdfplumber (además: pdftotext del sistema)
 python src/run_pipeline.py              # usa data/sample (datos ficticios)
 open app/index.html                     # abrir la app generada
 ```
@@ -78,12 +84,12 @@ de ejemplo inventados.
 
 ## Roadmap
 
-- [x] Pipeline de parseo + categorización + app web
-- [x] Proyección de compromisos futuros
-- [ ] Sincronización con Google Sheet (bridge Apps Script)
-- [ ] Dashboards en Looker Studio
+- [x] Pipeline: 6 lectores por contenido, **validados al centavo**
+- [x] Categorización automática (~80%) + recategorización desde la app
+- [x] App privada en el celu (Google Apps Script)
+- [ ] Proyección de compromisos **calculada desde los datos reales** (hoy es config manual)
+- [ ] Google Sheet + dashboards en Looker Studio
 - [ ] Recordatorios automáticos (carga diaria y de resúmenes)
-- [ ] Importador in-app
 
 ---
 
