@@ -46,7 +46,7 @@ lfbazar,Gasto,Ferretería/Bazar,
 intereses ganados,Ingreso,Intereses/Rendimientos,
 tarjeta comisi,Gasto,Intereses/Comisiones,comisión DolarApp
 pagos con tarjeta cr,Gasto,Intereses/Comisiones,comisión DolarApp
-debito cuota 291-96,Gasto,Cuotas tarjeta,cuota préstamo (revisar taxonomía)
+debito cuota,Gasto,Préstamo,cuota de préstamo (caja de ahorro)
 lajaus,Gasto,Cafés/Snacks,café
 shiok,Gasto,Cafés/Snacks,café
 andres ulises arias,Gasto,Truco,amigo (editable por transacción)
